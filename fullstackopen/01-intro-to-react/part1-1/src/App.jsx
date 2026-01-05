@@ -29,13 +29,17 @@ function Stats({ good, neutral, bad, sum, average }) {
   }
   return (
     <>
-      <p>good {good}</p>
-      <p>neutral {neutral}</p>
-      <p>bad {bad}</p>
-      <p>sum {sum}</p>
-      <p>average {sum ? average + "%" : "n/a"}</p>
+      <StatsLine text="good" value={good}/>
+      <StatsLine text="neutral" value={neutral}/>
+      <StatsLine text="bad" value={bad}/>
+      <StatsLine text="sum" value={sum}/>
+      <StatsLine text="average" value={average + '%'}/>
     </>
   )
+}
+
+function StatsLine({ text, value }) {
+  return <p>{text} {value}</p>
 }
 
 export default App
