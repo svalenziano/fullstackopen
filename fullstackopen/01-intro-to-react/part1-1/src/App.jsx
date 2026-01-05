@@ -14,11 +14,7 @@ function App() {
       <Button label={"neutral"} onClick={() => setNeutral(i => i + 1)}></Button>
       <Button label={"bad"} onClick={() => setBad(i => i + 1)}></Button>
       <h1>statistics</h1>
-      <p>good {good}</p>
-      <p>neutral {neutral}</p>
-      <p>bad {bad}</p>
-      <p>sum {sum}</p>
-      <p>average {sum ? average + "%" : "n/a"}</p>
+      <Stats good={good} neutral={neutral} bad={bad} sum={sum} average={average}/>
     </div>
   )
 }
@@ -27,6 +23,16 @@ function Button({ label, onClick }) {
   return <button onClick={onClick}>{label}</button>
 }
 
-
+function Stats({ good, neutral, bad, sum, average }) {
+  return (
+    <>
+      <p>good {good}</p>
+      <p>neutral {neutral}</p>
+      <p>bad {bad}</p>
+      <p>sum {sum}</p>
+      <p>average {sum ? average + "%" : "n/a"}</p>
+    </>
+  )
+}
 
 export default App
