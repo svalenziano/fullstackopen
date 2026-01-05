@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import { useState, useEffect } from 'react';
 
 const App = () => {
   const [count, setCount] = useState(0);
@@ -25,9 +25,26 @@ const App = () => {
       <Header course={course.name}></Header>
       <Content parts={course.parts}/>
       <Total parts={course.parts}/>
+      <Incrementer/>
       <Button count={count} setCount={setCount}/>
     </div>
   )
+}
+
+function Incrementer() {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+      const id = setInterval(() => {
+        setCount(i => i + 1)
+      }, 1000);
+
+
+      return () => clearInterval(id);
+    }
+  , [])
+
+  return <p>{count}</p>
 }
 
 function Button({count, setCount}) {
