@@ -1,51 +1,32 @@
 import { useState, useEffect } from 'react';
 
-const App = () => {
-  const [left, setLeft] = useState(0)
-  const [right, setRight] = useState(0)
-  const [allClicks, setAll] = useState([])
-
-  const handleLeftClick = () => {
-    setAll(allClicks.concat('L'))
-    setLeft(left + 1)
-    }
-
-  const handleRightClick = () => {
-    setAll(allClicks.concat('R'))
-    setRight(right + 1)
-    }
-
-  function reset() {
-    setAll([]);
-    setLeft(0);
-    setRight(0);
-  }
+function App() {
+  const [good, setGood] = useState(0);
+  const [neutral, setNeutral] = useState(0);
+  const [bad, setBad] = useState(0);
+  const sum = good + neutral + bad;
+  const average = (good / sum).toFixed(2);
 
   return (
     <div>
-      {left}
-      <button onClick={handleLeftClick}>left</button>
-      <button onClick={handleRightClick}>right</button>
-      {right}
-      <History clickHistory={allClicks}/>
-      <button onClick={reset}>Reset</button>
+      <h1>give feedback</h1>
+      <Button label={"good"} onClick={() => setGood(i => i + 1)}></Button>
+      <Button label={"neutral"} onClick={() => setNeutral(i => i + 1)}></Button>
+      <Button label={"bad"} onClick={() => setBad(i => i + 1)}></Button>
+      <h1>statistics</h1>
+      <p>good {good}</p>
+      <p>neutral {neutral}</p>
+      <p>bad {bad}</p>
+      <p>sum {sum}</p>
+      <p>average {sum ? average + "%" : "n/a"}</p>
     </div>
   )
 }
 
-function History({ clickHistory }) {
-  let result;
-  if (clickHistory.length > 0) {
-    result = (
-      <>
-        <p>History:{clickHistory.join("")}</p>
-        <p>Total: {clickHistory.length}</p>
-      </>
-    )
-  } else {
-    result = <p>Click a button to get started!</p>
-  }
-  return <div>{result}</div>
+function Button({ label, onClick }) {
+  return <button onClick={onClick}>{label}</button>
 }
+
+
 
 export default App
