@@ -20,35 +20,30 @@ const App = () => {
     ]
   }
 
+  function increment() {
+    setCount(i => i + 1);
+  }
+
+  function resetCount() {
+    setCount(0);
+  }
+
   return (
     <div>
       <Header course={course.name}></Header>
       <Content parts={course.parts}/>
       <Total parts={course.parts}/>
-      <Incrementer/>
-      <Button count={count} setCount={setCount}/>
+      <p>{count}</p>
+      <Button label={"+"} onClick={increment}/>
+      <Button label={"-"} onClick={() => setCount(i => i - 1)}/>
+      <Button label={"Reset"} onClick={resetCount}/>
     </div>
   )
 }
 
-function Incrementer() {
-  const [count, setCount] = useState(0);
 
-  useEffect(() => {
-      const id = setInterval(() => {
-        setCount(i => i + 1)
-      }, 1000);
-
-
-      return () => clearInterval(id);
-    }
-  , [])
-
-  return <p>{count}</p>
-}
-
-function Button({count, setCount}) {
-  return <button onClick={e => setCount(i => i + 1)}>Count={count}</button>
+function Button({label, onClick}) {
+  return <button onClick={onClick}>{label}</button>
 }
 
 function Header({course}) {
@@ -56,7 +51,6 @@ function Header({course}) {
 }
 
 function Content({parts}) {
-  let num = 0;
   return (
     <>
       {parts.map((c, idx) => <p key={idx}>{c.name} - {c.exercises}</p>)}
