@@ -14,9 +14,14 @@ const App = () => {
    
   const [selected, setSelected] = useState(0)
 
+  function setRandom() {
+    setSelected(Math.floor(Math.random() * anecdotes.length));
+  }
+
   return (
     <div>
       {anecdotes[selected]}
+      <button onClick={setRandom} style={{display: "block"}}>Fetch</button>
     </div>
   )
 }
