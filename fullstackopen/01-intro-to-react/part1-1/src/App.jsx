@@ -24,6 +24,9 @@ function Button({ label, onClick }) {
 }
 
 function Stats({ good, neutral, bad, sum, average }) {
+  if (sum === 0) {
+    return <p>No feedback given, yet...</p>
+  }
   return (
     <>
       <p>good {good}</p>
