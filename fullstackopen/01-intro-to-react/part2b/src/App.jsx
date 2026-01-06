@@ -6,6 +6,8 @@ const App = (props) => {
   const [notes, setNotes] = useState(props.notes)
   const [newText, setNewText] = useState('');
   const maxId = notes.reduce((accum, note) => Math.max(accum, note.id), 0)
+  const disable = newText.length === 0 ? "disabled" : "";
+  console.log(disable)
 
   const updateForm = e => setNewText(e.target.value);
 
@@ -20,7 +22,7 @@ const App = (props) => {
       {
         id: maxId + 1,
         content: newText,
-        important: false,
+        important: Math.random() < 0.5,
       }
     ]);
     setNewText('')
@@ -32,6 +34,7 @@ const App = (props) => {
       <form onSubmit={submit}>
         <label htmlFor="new-note">New note: </label>
         <input name="new-note" type="text" value={newText} onChange={updateForm}/>
+        <input type="submit" disabled={disable}/>
       </form>
       <ul>
         {notes.map(note => 
