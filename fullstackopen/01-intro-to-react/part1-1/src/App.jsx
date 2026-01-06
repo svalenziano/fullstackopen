@@ -20,6 +20,7 @@ const App = () => {
   const [anecdotes, setAnecdotes] = useState(defaultAnecdotes);
   const [selected, setSelected] = useState(0)
   const votes = anecdotes[selected].votes;
+  const mostPopular = getMostPopular();
 
   function setRandom() {
     setSelected(Math.floor(Math.random() * anecdotes.length));
@@ -27,19 +28,45 @@ const App = () => {
 
   function vote() {
     setAnecdotes(anecdotes.map((quoteObj, idx) => {
-      return idx === selected ? {...quoteObj, votes: quoteObj.votes + 1} : {...quoteObj};
+      if (idx === selected) {
+        return {...quoteObj, votes: quoteObj.votes + 1};
+      }
+      return {...quoteObj};
     }));
+  }
+
+  function getMostPopular() {
+    /*
+    Input = anecdotes
+    Output = most popular anecdotes
+    Idea: Iterate thru anecdotes, keeping track of maxVotes and maxIdx.
+      If votes > maxVotes, update maxVotes and maxIdx
+      Return the quote at maxIdx
+    */
+    let maxVotes = 0;
+    let maxIdx = 0;
+    for (let i = 0; i < anecdotes.length; i++) {
+      const a = anecdotes[i];
+      if (a.votes > maxVotes) {
+        maxVotes = a.votes;
+        maxIdx = i;
+      }
+    }
+    return maxVotes === 0 ? "No votes yet" : anecdotes[maxIdx].text;
   }
 
 
   return (
     <div>
+      <h1>Anecdote of the day</h1>
       <div>
         <button onClick={setRandom}>Next</button>
         <button onClick={vote}>Vote</button>
       </div>
       <blockquote>{anecdotes[selected].text}</blockquote>
       <p>Votes: {votes}</p>
+      <h1>Most popular</h1>
+      <p>{mostPopular}</p>
     </div>
   )
 }
