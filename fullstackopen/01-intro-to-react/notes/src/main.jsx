@@ -1,5 +1,13 @@
 import ReactDOM from 'react-dom/client'
+import axios from 'axios'
 import App from './App'
+
+axios.get('http://localhost:3001/notes', {
+  headers: {
+    Accept: 'application/json'
+  }
+}).then(r => console.log(r))
+
 
 const notes = [
   {
