@@ -21,6 +21,14 @@ const App = () => {
   function newContact(ev) {
     ev.preventDefault();
     if (names.includes(newName)) {
+      update(newName);
+
+    } else {
+      createNewNote();
+    }
+  }
+
+  function update(newName) {
       const { id } = notes.find(note => note.name === newName);
       // console.log(id, oldNumber)
 
@@ -30,17 +38,16 @@ const App = () => {
           console.log(newNote)
           setNotes(notes.map(note => note.id === newNote.id ? newNote : note))
         });
+  }
 
-    } else {
-      noteService
-        .create({name: newName, number: newPhone})
-        .then((data) => {
-          setNotes(notes.concat(data));
-          setNewName('');
-          setNewPhone('');
-        })
-    }
-
+  function createNewNote() {
+    noteService
+      .create({name: newName, number: newPhone})
+      .then((data) => {
+        setNotes(notes.concat(data));
+        setNewName('');
+        setNewPhone('');
+      })
   }
 
   function handleToggle(ev) {
