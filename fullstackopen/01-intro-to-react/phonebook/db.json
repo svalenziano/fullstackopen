@@ -39,26 +39,15 @@
     {
       "id": "b20a",
       "name": "Dan",
-      "number": "2345098324",
-      "important": false
-    },
-    {
-      "id": "bc5e",
-      "name": "Dband",
-      "number": "666",
-      "important": true
+      "number": "awoifej",
+      "important": false,
+      "newPhone": "666"
     },
     {
       "id": "46df",
       "name": "hi thereeee",
       "number": "",
       "important": false
-    },
-    {
-      "id": "8df3",
-      "name": "ttt",
-      "number": "456",
-      "important": true
     },
     {
       "id": "4248",
@@ -70,6 +59,11 @@
       "name": "ddan",
       "number": "34980340545",
       "important": true
+    },
+    {
+      "id": "589c",
+      "name": "Danz",
+      "number": "1"
     }
   ]
 }
