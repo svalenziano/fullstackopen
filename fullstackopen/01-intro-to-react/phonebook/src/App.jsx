@@ -101,11 +101,11 @@ function BookEntry({ id, name, number, important, setImportant }) {
     // const id = ev.target.dataset.id;
     // // console.log(ev.target)
     console.log(id)
-    // axios({
-    //   method: "post",
-    //   url: `http://localhost:3001/persons/${id}`,
-    //   data: {}
-    // })
+    axios({
+      method: "patch",
+      url: `http://localhost:3001/persons/${id}`,
+      data: {important: !important}
+    }).then(r => console.log(r.data))
   }
 
   return (
@@ -117,3 +117,9 @@ function BookEntry({ id, name, number, important, setImportant }) {
 }
 
 export default App
+
+/*
+Goal: when imporant is toggled, POST to server, then update the local state
+
+Idea 1: When person is updated, you only need to update that person?? or do you wish to update the entire persons object?
+*/
