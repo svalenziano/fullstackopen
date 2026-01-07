@@ -1,11 +1,5 @@
 import { useState } from 'react'
 
-const defaultPeople = [
-  { id: 0, name: 'Arto Hellas', phone:'555-123-4567' },
-  { id: 1, name: 'Albert Einstein', phone:'555-123-1111' },
-  { id: 2, name: 'Hanna Boops', phone:'333-222-1111' },
-  ];
-
 const App = () => {
   const [persons, setPersons] = useState(defaultPeople);
   const [newName, setNewName] = useState('');
