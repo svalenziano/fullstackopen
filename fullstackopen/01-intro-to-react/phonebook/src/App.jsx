@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import axios from 'axios'
 
 const App = () => {
-  const [persons, setPersons] = useState(defaultPeople);
+  const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState('');
   const [newPhone, setNewPhone] = useState('')
   const [filter, setFilter] = useState('')
@@ -12,10 +13,13 @@ const App = () => {
   const maxId = persons.reduce((accum, person) => Math.max(accum, person.id), 0);
   const names = persons.map(p => p.name);
 
+  useEffect(() => {
+    axios.get("http://localhost:3001/persons")
+      .then(r => setPersons(r.data))
+  },[])
+
   function newContact(ev) {
     ev.preventDefault();
-    // console.log(newName);
-    // console.log(names);
     if (names.includes(newName)) {
       alert(`"${newName}" is already in the phonebook. Try a different name.`)
       return;
@@ -79,7 +83,7 @@ function AddNew({
 
 function Phonebook({ persons }) {
   const toDisplay = persons.length > 0
-    ? <ul>{persons.map(p => <li key={p.id}>{p.name} {p.phone ? p.phone : ''}</li>)}</ul>
+    ? <ul>{persons.map(p => <li key={p.id}>{p.name} {p.number ? p.number : ''}</li>)}</ul>
     : <p>Nothing to see here</p>
     
   return (
