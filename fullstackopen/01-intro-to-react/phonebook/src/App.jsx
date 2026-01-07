@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import noteService from "./services/notes.js"
 import axios from 'axios'
 
 const App = () => {
@@ -13,12 +14,11 @@ const App = () => {
   const maxId = notes.reduce((accum, person) => Math.max(accum, person.id), 0);
   const names = notes.map(p => p.name);
 
-  function fetchPeople() {
-    axios.get("http://localhost:3001/persons")
-      .then(r => setNotes(r.data))
-    }
 
-  useEffect(() => fetchPeople(), [])
+  useEffect(() => {
+    noteService.getAll()
+      .then(data => setNotes(data))
+  }, [])
 
   function newContact(ev) {
     ev.preventDefault();
