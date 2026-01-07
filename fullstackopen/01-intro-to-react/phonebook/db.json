@@ -4,7 +4,7 @@
       "name": "Arto Hellas",
       "number": "040-123456",
       "id": "1",
-      "important": true
+      "important": false
     },
     {
       "name": "Ada Lovelace",
@@ -16,7 +16,7 @@
       "name": "Dan Abramov",
       "number": "12-43-234345",
       "id": "3",
-      "important": true
+      "important": false
     },
     {
       "name": "Mary Poppendieck",
@@ -31,7 +31,7 @@
         "name": "asdf",
         "number": "2234"
       },
-      "important": false
+      "important": true
     },
     {
       "id": "333a",
@@ -76,6 +76,46 @@
       "id": "b20a",
       "name": "Dan",
       "number": "2345098324",
+      "important": false
+    },
+    {
+      "id": "bc5e",
+      "name": "Dband",
+      "number": "666",
+      "important": true
+    },
+    {
+      "id": "ac8c",
+      "name": "band2",
+      "number": "666666",
+      "important": false
+    },
+    {
+      "id": "46df",
+      "name": "hi thereeee",
+      "number": "",
+      "important": false
+    },
+    {
+      "id": "42fa",
+      "name": "zzz",
+      "number": "123"
+    },
+    {
+      "id": "8df3",
+      "name": "ttt",
+      "number": "456",
+      "important": true
+    },
+    {
+      "id": "4248",
+      "name": "wqer",
+      "number": "asdf"
+    },
+    {
+      "id": "8d44",
+      "name": "ddan",
+      "number": "34980340545",
       "important": true
     }
   ]

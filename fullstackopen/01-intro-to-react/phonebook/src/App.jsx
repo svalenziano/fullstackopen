@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import noteService from "./services/notes.js"
-import axios from 'axios'
 
 const App = () => {
   const [notes, setNotes] = useState([]);
@@ -9,14 +8,13 @@ const App = () => {
   const [filter, setFilter] = useState('')
 
   const filteredPersons = filter 
-    ? notes.filter(p => p.name.toLowerCase().includes(filter.toLowerCase())) 
+    ? notes.filter(p => p.name?.toLowerCase().includes(filter.toLowerCase())) 
     : notes;
-  const maxId = notes.reduce((accum, person) => Math.max(accum, person.id), 0);
   const names = notes.map(p => p.name);
 
-
   useEffect(() => {
-    noteService.getAll()
+    noteService
+      .getAll()
       .then(data => setNotes(data))
   }, [])
 
@@ -27,29 +25,29 @@ const App = () => {
       return;
     }
 
-    axios({
-      method: "post",
-      url:"http://localhost:3001/persons",
-      data: {name: newName, number: newPhone},
-    }).then((res) => {
-      setNotes(notes.concat(res.data));
-      setNewName('');
-      setNewPhone('');
-    })
-
+    noteService
+      .create({name: newName, number: newPhone})
+      .then((data) => {
+        setNotes(notes.concat(data));
+        setNewName('');
+        setNewPhone('');
+      })
   }
 
   function handleToggle(ev) {
     const id = ev.target.dataset.id;
     const important = ev.target.dataset.important
-    console.log(`Toggling importance of ${ev.target.dataset.id}, tktk`)
 
-    axios({
-      method: "patch",
-      url: `http://localhost:3001/persons/${id}`,
-      data: {important: important === "true" ? false : true},
-    }).then(r => setNotes(notes.map(note => note.id === id ? r.data : note)))
-  }
+    noteService
+      .update(id, {important: important === "true" ? false : true})
+      .then(data => {
+        setNotes(notes.map(note => note.id === id ? data : note));
+      })
+      .catch(er => {
+        alert("That note doesn't exist, removing it now...");
+        setNotes(notes.filter(note => note.id !== id));
+      })
+    }
 
   return (
     <div>
