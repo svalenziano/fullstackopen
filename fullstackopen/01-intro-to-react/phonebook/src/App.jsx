@@ -2,21 +2,23 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 
 const App = () => {
-  const [persons, setPersons] = useState([]);
+  const [notes, setNotes] = useState([]);
   const [newName, setNewName] = useState('');
   const [newPhone, setNewPhone] = useState('')
   const [filter, setFilter] = useState('')
 
   const filteredPersons = filter 
-    ? persons.filter(p => p.name.toLowerCase().includes(filter.toLowerCase())) 
-    : persons;
-  const maxId = persons.reduce((accum, person) => Math.max(accum, person.id), 0);
-  const names = persons.map(p => p.name);
+    ? notes.filter(p => p.name.toLowerCase().includes(filter.toLowerCase())) 
+    : notes;
+  const maxId = notes.reduce((accum, person) => Math.max(accum, person.id), 0);
+  const names = notes.map(p => p.name);
 
-  useEffect(() => {
+  function fetchPeople() {
     axios.get("http://localhost:3001/persons")
-      .then(r => setPersons(r.data))
-  },[])
+      .then(r => setNotes(r.data))
+    }
+
+  useEffect(() => fetchPeople(), [])
 
   function newContact(ev) {
     ev.preventDefault();
@@ -24,17 +26,17 @@ const App = () => {
       alert(`"${newName}" is already in the phonebook. Try a different name.`)
       return;
     }
-    setPersons([
-      ...persons,
-      {
-        id: maxId + 1, 
-        name: newName,
-        phone: newPhone,
-      }
-      
-    ])
-    setNewName('');
-    setNewPhone('');
+
+    axios({
+      method: "post",
+      url:"http://localhost:3001/persons",
+      data: {name: newName, number: newPhone},
+    }).then((res) => {
+      setNotes(notes.concat(res.data));
+      setNewName('');
+      setNewPhone('');
+    })
+
   }
 
   return (
@@ -93,5 +95,9 @@ function Phonebook({ persons }) {
     </div>
   )
 }
+
+// function BookEntry({ name, number, important, setImportant }) {
+
+// }
 
 export default App
