@@ -85,7 +85,7 @@ function AddNew({
 
 function Phonebook({ persons }) {
   const toDisplay = persons.length > 0
-    ? <ul>{persons.map(p => <li key={p.id}>{p.name} {p.number ? p.number : ''}</li>)}</ul>
+    ? <ul>{persons.map(p => <BookEntry key={p.id} id={p.id} name={p.name} number={p.number} important={p.important}/>)}</ul>
     : <p>Nothing to see here</p>
     
   return (
@@ -96,8 +96,24 @@ function Phonebook({ persons }) {
   )
 }
 
-// function BookEntry({ name, number, important, setImportant }) {
+function BookEntry({ id, name, number, important, setImportant }) {
+  function handleToggleImportant(ev) {
+    // const id = ev.target.dataset.id;
+    // // console.log(ev.target)
+    console.log(id)
+    // axios({
+    //   method: "post",
+    //   url: `http://localhost:3001/persons/${id}`,
+    //   data: {}
+    // })
+  }
 
-// }
+  return (
+    <li data-id={id}>
+      {name} {number ? number : ''}
+      <button data-id={id} onClick={handleToggleImportant}>{important ? "important" : "unimportant"}</button>
+    </li>
+ )
+}
 
 export default App
