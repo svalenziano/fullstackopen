@@ -40,7 +40,15 @@ const App = () => {
   }
 
   function handleToggle(ev) {
+    const id = ev.target.dataset.id;
+    const important = ev.target.dataset.important
     console.log(`Toggling importance of ${ev.target.dataset.id}, tktk`)
+
+    axios({
+      method: "patch",
+      url: `http://localhost:3001/persons/${id}`,
+      data: {important: important === "true" ? false : true},
+    }).then(r => setNotes(notes.map(note => note.id === id ? r.data : note)))
   }
 
   return (
@@ -116,6 +124,7 @@ function BookEntry({ id, name, number, important, handleToggleImportant }) {
       {name} {number ? number : ''}
       <button 
         data-id={id} 
+        data-important={important}
         onClick={handleToggleImportant}
       >
         {important ? "important" : "unimportant"}
