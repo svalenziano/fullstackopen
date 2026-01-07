@@ -47,14 +47,32 @@ const App = () => {
         alert("That note doesn't exist, removing it now...");
         setNotes(notes.filter(note => note.id !== id));
       })
+  }
+
+  function handleDelete(id) {
+
+    const name = notes.find(note => note.id === id)?.name;
+
+    if (window.confirm(`Delete "${name}"?`)) {
+      noteService.del(id)
+        .then(r => {
+          setNotes(notes.filter(note => note.id !== id));
+        })
+    } else {
+      console.error(`Note ${id} not found!`)
     }
+  }
 
   return (
     <div>
       <h2>Phonebook</h2>
       <Filter filter={filter} setFilter={setFilter}/>
       <AddNew onSubmit={newContact} newName={newName} newPhone={newPhone} setNewName={setNewName} setNewPhone={setNewPhone}/>
-      <Phonebook persons={filteredPersons} handleToggleImportant={handleToggle}/>
+      <Phonebook 
+        persons={filteredPersons} 
+        handleToggleImportant={handleToggle}
+        handleDelete={handleDelete}
+      />
     </div>
   )
 }
@@ -93,7 +111,7 @@ function AddNew({
   )
 }
 
-function Phonebook({ persons, handleToggleImportant }) {
+function Phonebook({ persons, handleToggleImportant, handleDelete }) {
   const toDisplay = persons.length > 0
     ? <ul>{persons.map(p => 
       <BookEntry 
@@ -103,6 +121,7 @@ function Phonebook({ persons, handleToggleImportant }) {
         number={p.number} 
         important={p.important}
         handleToggleImportant={handleToggleImportant}
+        handleDelete={handleDelete}
       />
     )}</ul>
     : <p>Nothing to see here</p>
@@ -115,7 +134,7 @@ function Phonebook({ persons, handleToggleImportant }) {
   )
 }
 
-function BookEntry({ id, name, number, important, handleToggleImportant }) {
+function BookEntry({ id, name, number, important, handleToggleImportant, handleDelete }) {
 
   return (
     <li data-id={id}>
@@ -127,6 +146,7 @@ function BookEntry({ id, name, number, important, handleToggleImportant }) {
       >
         {important ? "important" : "unimportant"}
       </button>
+      <button onClick={e => handleDelete(id)}>X</button>
     </li>
  )
 }

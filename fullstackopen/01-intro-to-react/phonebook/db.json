@@ -19,36 +19,6 @@
       "important": false
     },
     {
-      "name": "Mary Poppendieck",
-      "number": "39-23-6423122",
-      "id": "4",
-      "important": false
-    },
-    {
-      "id": "8570",
-      "method": "post",
-      "body": {
-        "name": "asdf",
-        "number": "2234"
-      },
-      "important": true
-    },
-    {
-      "id": "333a",
-      "method": "post",
-      "body": {
-        "name": "asdf",
-        "number": "1234"
-      },
-      "important": true
-    },
-    {
-      "id": "1118",
-      "name": "asdf",
-      "number": "1234",
-      "important": true
-    },
-    {
       "id": "0476",
       "name": "Hi there",
       "number": "555",
@@ -67,12 +37,6 @@
       "important": false
     },
     {
-      "id": "3002",
-      "name": "Super",
-      "number": "098345",
-      "important": true
-    },
-    {
       "id": "b20a",
       "name": "Dan",
       "number": "2345098324",
@@ -85,21 +49,10 @@
       "important": true
     },
     {
-      "id": "ac8c",
-      "name": "band2",
-      "number": "666666",
-      "important": false
-    },
-    {
       "id": "46df",
       "name": "hi thereeee",
       "number": "",
       "important": false
-    },
-    {
-      "id": "42fa",
-      "name": "zzz",
-      "number": "123"
     },
     {
       "id": "8df3",

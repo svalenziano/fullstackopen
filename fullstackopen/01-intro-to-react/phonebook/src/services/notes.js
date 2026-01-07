@@ -22,8 +22,14 @@ function update(id, data) {
     .then(res => res.data);
 }
 
+function del(id) {
+  return axios.delete(`${baseURL}/${id}`)
+    .then(res => res.data);
+}
+
 export default {
   getAll,
   create,
   update,
+  del,
 }
