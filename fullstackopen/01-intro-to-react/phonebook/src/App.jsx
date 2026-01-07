@@ -39,12 +39,16 @@ const App = () => {
 
   }
 
+  function handleToggle(ev) {
+    console.log(`Toggling importance of ${ev.target.dataset.id}, tktk`)
+  }
+
   return (
     <div>
       <h2>Phonebook</h2>
       <Filter filter={filter} setFilter={setFilter}/>
       <AddNew onSubmit={newContact} newName={newName} newPhone={newPhone} setNewName={setNewName} setNewPhone={setNewPhone}/>
-      <Phonebook persons={filteredPersons}/>
+      <Phonebook persons={filteredPersons} handleToggleImportant={handleToggle}/>
     </div>
   )
 }
@@ -83,9 +87,18 @@ function AddNew({
   )
 }
 
-function Phonebook({ persons }) {
+function Phonebook({ persons, handleToggleImportant }) {
   const toDisplay = persons.length > 0
-    ? <ul>{persons.map(p => <BookEntry key={p.id} id={p.id} name={p.name} number={p.number} important={p.important}/>)}</ul>
+    ? <ul>{persons.map(p => 
+      <BookEntry 
+        key={p.id} 
+        id={p.id} 
+        name={p.name} 
+        number={p.number} 
+        important={p.important}
+        handleToggleImportant={handleToggleImportant}
+      />
+    )}</ul>
     : <p>Nothing to see here</p>
     
   return (
@@ -96,22 +109,17 @@ function Phonebook({ persons }) {
   )
 }
 
-function BookEntry({ id, name, number, important, setImportant }) {
-  function handleToggleImportant(ev) {
-    // const id = ev.target.dataset.id;
-    // // console.log(ev.target)
-    console.log(id)
-    axios({
-      method: "patch",
-      url: `http://localhost:3001/persons/${id}`,
-      data: {important: !important}
-    }).then(r => console.log(r.data))
-  }
+function BookEntry({ id, name, number, important, handleToggleImportant }) {
 
   return (
     <li data-id={id}>
       {name} {number ? number : ''}
-      <button data-id={id} onClick={handleToggleImportant}>{important ? "important" : "unimportant"}</button>
+      <button 
+        data-id={id} 
+        onClick={handleToggleImportant}
+      >
+        {important ? "important" : "unimportant"}
+      </button>
     </li>
  )
 }
