@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react'
 import noteService from "./services/notes.js"
+import './App.css'
 
 const App = () => {
   const [notes, setNotes] = useState([]);
   const [newName, setNewName] = useState('');
   const [newPhone, setNewPhone] = useState('');
   const [filter, setFilter] = useState('');
+  const [notification, setNotification] = useState('')
 
   const names = notes.map(p => p.name);
   const filteredPersons = filter 
@@ -22,20 +24,22 @@ const App = () => {
     ev.preventDefault();
     if (names.includes(newName)) {
       update(newName);
+      setNotification(`Updated ${newName} to ${newPhone}`)
 
     } else {
       createNewNote();
+      setNotification(`Added new note: ${newName}`)
     }
+    setNewName('');
+    setNewPhone('');
   }
 
   function update(newName) {
       const { id } = notes.find(note => note.name === newName);
-      // console.log(id, oldNumber)
 
       noteService
         .update(id, {number: newPhone})
         .then(newNote => {
-          console.log(newNote)
           setNotes(notes.map(note => note.id === newNote.id ? newNote : note))
         });
   }
@@ -45,9 +49,9 @@ const App = () => {
       .create({name: newName, number: newPhone})
       .then((data) => {
         setNotes(notes.concat(data));
-        setNewName('');
-        setNewPhone('');
+
       })
+    setNotification("Added! 👍")
   }
 
   function handleToggle(ev) {
@@ -58,9 +62,10 @@ const App = () => {
       .update(id, {important: important === "true" ? false : true})
       .then(data => {
         setNotes(notes.map(note => note.id === id ? data : note));
+        setNotification(`Updated ${id} to ${important ? "not important" : "important"}`)
       })
       .catch(er => {
-        alert("That note doesn't exist, removing it now...");
+        setNotification("That note doesn't exist, removing it now...");
         setNotes(notes.filter(note => note.id !== id));
       })
   }
@@ -74,13 +79,19 @@ const App = () => {
         .then(r => {
           setNotes(notes.filter(note => note.id !== id));
         })
+        .then(r => setNotification(`Note ${id} deleted`))
     } else {
-      console.error(`Note ${id} not found!`)
+      setNotification(`Note ${id} not found!`);
     }
   }
 
+  const style = {
+    fontFamily: "monospace",
+  }
+
   return (
-    <div>
+    <div style={style}>
+      <NotificationBar key={notification} msg={notification}/>
       <h2>Phonebook</h2>
       <Filter filter={filter} setFilter={setFilter}/>
       <AddNew onSubmit={newContact} newName={newName} newPhone={newPhone} setNewName={setNewName} setNewPhone={setNewPhone}/>
@@ -91,6 +102,29 @@ const App = () => {
       />
     </div>
   )
+}
+
+function NotificationBar({ msg }) {
+  const style = {
+    backgroundColor: "yellow",
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    textAlign: "center",
+    padding: "0.25em",
+    opacity: 1,
+    animation: "fadeOut 5s ease-out forwards",
+  }
+  if (msg) {
+    return (
+      <div style={style}>
+        <aside>{msg}</aside>
+      </div>
+    )
+  } else {
+    return null;
+  }
 }
 
 function Filter({ filter, setFilter }) {
