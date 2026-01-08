@@ -28,6 +28,7 @@ function App() {
     <div>
       <SearchBox onChange={filter} />
       <ListOfThings strings={names}/>
+      <CountryProfile country={allCountries[0]}/>
     </div>
   )
 }
@@ -50,6 +51,32 @@ function ListOfThings({ strings }) {
       </ul>
     )
   }
+}
+
+function CountryProfile({ country }) {
+  if (!country) return null;
+  // console.log(Object.values(country.languages));
+  // console.log(country)
+  
+  return (
+    <div>
+      <h1>{country.name.common}</h1>
+      <p>Capital: {country.capital[0]}</p>
+      <p>Area: {country.area}</p>
+      <h2>Languages:</h2>
+      <ListOfThings strings={Object.values(country.languages)}/>
+      <Img src={country.flags.svg}/>
+    </div>
+  )
+}
+
+function Img( {src} ) {
+  const style = {
+    display: "block",
+    width: "100%",
+    aspectRatio: 1,
+  }
+  return <img src={src} style={style}/>
 }
 
 export default App
