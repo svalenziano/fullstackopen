@@ -1,3 +1,18 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&display=swap');
+
+/* Apply this class to an element to apply the font */
+.fira-code-medium {
+  font-family: "Fira Code", monospace;
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-style: normal;
+}
+
+body {
+  font-family: 'Fira Code','Courier New', Courier, monospace;
+}
+
 @keyframes fadeOut {
   to {
     opacity: 0;
