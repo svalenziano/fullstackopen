@@ -16,11 +16,12 @@ function App() {
   function filter(ev) {
     console.log(ev.target.value)
     if (!allCountries) return;
+    const query = ev.target.value.toLowerCase()
 
-    // setFiltered(allCountries.filter(country => {
-    //   console.log(country)
-    //   return country.name.common.toLower().includes(ev.target.value)
-    // }))
+    setFiltered(allCountries.filter(country => {
+      country = country.name.common.toLowerCase();
+      return country.includes(query)
+    }))
   }
 
   return (
@@ -39,14 +40,13 @@ function SearchBox({ onChange }) {
 }
 
 function ListOfThings({ strings }) {
-  console.log(strings)
   if (!strings) return null;
   if (strings.length > 10) {
     return <p>Greater than 10 results</p>
   } else {
     return (
       <ul>
-        {strings.map(s => <li key={'4'}>{s}</li>)}
+        {strings.map(s => <li key={s}>{s}</li>)}
       </ul>
     )
   }
