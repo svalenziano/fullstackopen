@@ -34,6 +34,10 @@ const App = () => {
     setNewPhone('');
   }
 
+  function notifyAlreadyRemoved(name) {
+    setNotification(`${name} has already been removed by someone else!`)
+  }
+
   function update(newName) {
       const { id } = notes.find(note => note.name === newName);
 
@@ -41,7 +45,8 @@ const App = () => {
         .update(id, {number: newPhone})
         .then(newNote => {
           setNotes(notes.map(note => note.id === newNote.id ? newNote : note))
-        });
+        })
+        .catch(er => notifyAlreadyRemoved('tktk'))
   }
 
   function createNewNote() {
@@ -49,23 +54,24 @@ const App = () => {
       .create({name: newName, number: newPhone})
       .then((data) => {
         setNotes(notes.concat(data));
-
       })
-    setNotification("Added! 👍")
+    setNotification(`${newName} added! 👍`)
   }
 
   function handleToggle(ev) {
     const id = ev.target.dataset.id;
     const important = ev.target.dataset.important
+    const name = ev.target.dataset.name
 
     noteService
       .update(id, {important: important === "true" ? false : true})
       .then(data => {
         setNotes(notes.map(note => note.id === id ? data : note));
-        setNotification(`Updated ${id} to ${important ? "not important" : "important"}`)
+        setNotification(`Updated "${name}" to ${important === 'true' ? "NOT important" : "important"}`)
       })
       .catch(er => {
-        setNotification("That note doesn't exist, removing it now...");
+        // setNotification("That note doesn't exist, removing it now...");
+        notifyAlreadyRemoved(name)
         setNotes(notes.filter(note => note.id !== id));
       })
   }
@@ -76,13 +82,10 @@ const App = () => {
 
     if (window.confirm(`Delete "${name}"?`)) {
       noteService.del(id)
-        .then(r => {
-          setNotes(notes.filter(note => note.id !== id));
-        })
-        .then(r => setNotification(`Note ${id} deleted`))
-    } else {
-      setNotification(`Note ${id} not found!`);
-    }
+        .then(r => setNotification(`Note for "${name}" deleted`))
+        .catch(r => notifyAlreadyRemoved(`Note ${id} did not exist.  Don't worry, it's gone! 👍`))
+        .finally(r => setNotes(notes.filter(note => note.id !== id)))
+    }   
   }
 
   const style = {
@@ -191,6 +194,7 @@ function BookEntry({ id, name, number, important, handleToggleImportant, handleD
       {name} {number ? number : ''}
       <button 
         data-id={id} 
+        data-name={name}
         data-important={important}
         onClick={handleToggleImportant}
       >
