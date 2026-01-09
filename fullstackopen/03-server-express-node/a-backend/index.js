@@ -42,9 +42,7 @@ app.get('/api/notes/:id', (req, res) => {
 });
 
 app.post('/api/notes', (req, res) => {
-  const maxId = notes.reduce((accum, note) => {
-    return Math.max(accum, Number.parseInt(note.id));
-  }, -1);
+  const maxId = Math.max(...notes.map(n => Number(n.id)));
   
   let note = req.body;
 
