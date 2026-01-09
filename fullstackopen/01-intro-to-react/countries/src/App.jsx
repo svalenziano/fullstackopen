@@ -6,6 +6,7 @@ import './App.css'
 function App() {
   const [allCountries, setCountries] = useState([]);
   const [filtered, setFiltered] = useState([]);
+  const [query, setQuery] = useState('')
   const names = filtered
     .map(c => c.name.common);
 
@@ -32,7 +33,7 @@ function App() {
         return <CountryProfile country={filtered[0]}/>
         return <p>{JSON.stringify(filtered[0])}</p>    
       default:
-        return <ListOfThings strings={names}/>
+        return <ListOfCountries countries={filtered}/>
         // return filtered.length <= 10 
           // ? <ListOfThings strings={names}/> 
           // : <p>Too many results, please be more specific.</p>
@@ -52,6 +53,22 @@ function SearchBox({ onChange }) {
     margin: "0.5rem",
   }
   return <>find countries <input type="text" onChange={onChange} style={style}/></>
+}
+
+function ListOfCountries({ countries }) {
+  if (!countries) return null;
+
+  return (
+    <ul>
+      {countries.map(c => {
+        return <li key={c.name.common}>
+         {c.name.common}
+         <button>Show</button>
+        </li>
+      })}
+    </ul>
+  )
+  
 }
 
 function ListOfThings({ strings }) {
