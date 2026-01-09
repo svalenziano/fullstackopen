@@ -1,7 +1,25 @@
 const express = require("express");
+const morgan = require("morgan");
 const app = express();
 app.use(express.json());
-app.use(loqRequest);
+
+const test = function (tokens, req, res) {
+  return [
+    tokens.method(req, res),
+    tokens.url(req, res),
+    tokens.status(req, res),
+    tokens.res(req, res, 'content-length'), '-',
+    tokens['response-time'](req, res), 'ms',
+  ].join(' ')
+}
+
+app.use(morgan('tiny', {
+  skip: (req, res) => req.method === "POST"
+}));
+app.use(morgan(test, {
+  skip: (req, res) => req.method !== "POST"
+}));
+
 
 
 // CUSTOM MIDDLEWARE
