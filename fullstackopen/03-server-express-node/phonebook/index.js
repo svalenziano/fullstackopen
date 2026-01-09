@@ -31,6 +31,10 @@ function findEntryById(obj, id) {
   return obj?.find(entry => entry.id === id);
 }
 
+function nameExists(obj, name) {
+  return !!obj.find(i => i.name === name)
+}
+
 app.get('/info', (req, res) => {
   res.send(`
     <p>Phonebook has info for ${entries.length} people</p>
@@ -67,9 +71,39 @@ app.delete('/api/persons/:id', (req, res) => {
   return res.status(404).json({error: `No person with id ${id} found.`});
 });
 
-// api.post('/api/persons', (req, res) => {
+app.post('/api/persons', (req, res) => {
+/*
+  Input: {
+    name: string
+    number: string
+  }
+  - Generate random id
+  - If name or number is missing, return `400` status and {error: name or number is missing}
+  - Name already exists? return '409' (conflict) status code and {error: name already exists}
+*/
+  const { name, number } = req.body;
 
-// })
+  if (!name || !number) {
+    return res.status(400).json({ error: "Name or number is missing" });
+  }
+
+  if (nameExists(entries, name)) {
+    return res.status(409).json({ error: "Name already exists" });
+  }
+
+  const id = String(Math.floor(Math.random() * 1000000000000)) ;
+
+  entries.push({
+    id,
+    name,
+    number
+  });
+  // console.log(req.body)
+
+  return res.json(entries);
+
+
+})
 
 
 const PORT = 3001;
