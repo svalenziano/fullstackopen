@@ -13,7 +13,7 @@ function loqRequest(req, res, next) {
 }
 
 function handleUnknownEndpoint(req, res) {
-  return response.status(404).send({ error: 'unknown endpoint' })
+  return res.status(404).send({ error: 'unknown endpoint' });
 }
 
 const DEFAULTS = [
