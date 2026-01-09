@@ -7,8 +7,10 @@ function App() {
   const [query, setQuery] = useState('');
   const filtered = allCountries.filter(country => {
     const countryName = country.name.common.toLowerCase();
-    return countryName.includes(query);
+    return countryName.includes(query.toLowerCase());
   });
+
+  console.log(filtered.length)
   
   useEffect(() => {
     db.getAll().then(data => setAllCountries(data));
@@ -17,40 +19,44 @@ function App() {
   return (
     <div>
       <SearchBox value={query} setValue={setQuery} />
-      <ResultsDisplay countries={filtered}/>
+      <ResultsDisplay countries={filtered} query={query} setQuery={setQuery}/>
     </div>
   );
 }
 
-function ResultsDisplay({ countries }) {
-  if (countries.length === 0) {
+function ResultsDisplay({ countries, query, setQuery }) {
+  if (query.length === 0) {
     return <p>Type a query pls ☝️</p>;
+  }
+
+  if (countries.length === 0) {
+    return <p>Nothing found ☹️, please try another query.</p>
   }
 
   if (countries.length === 1) {
     return <CountryProfile country={countries[0]} />;
   }
 
-  return <ListOfCountries countries={countries} />;
+  return <ListOfCountries countries={countries} setQuery={setQuery} />;
 }
 
 function SearchBox({ value, setValue }) {
   return (
     <div style={{ margin: "0.5rem" }}>
-      find countries <input type="text" value={value} onChange={(ev) => setValue(ev.target.value)} />
+      Search <input type="text" size="50" value={value} onChange={(ev) => setValue(ev.target.value)} />
     </div>
   );
 }
 
-function ListOfCountries({ countries }) {
+function ListOfCountries({ countries, setQuery }) {
   if (!countries) return null;
 
   return (
     <ul>
       {countries.map(country => (
-        <li key={country.name.common}>
+        <li key={country.name.common} >
           {country.name.common}
-          <button>Show</button>
+          <button onClick={(ev) => setQuery(ev.target.dataset.name)} data-name={country.name.common}>Show</button>
         </li>
       ))}
     </ul>
