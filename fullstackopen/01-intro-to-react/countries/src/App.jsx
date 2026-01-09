@@ -1,58 +1,53 @@
-import { useState, useEffect } from 'react'
-import db from "./services/countries.js"
-import './App.css'
-
+import { useState, useEffect } from 'react';
+import db from "./services/countries.js";
+import './App.css';
 
 function App() {
-  const [allCountries, setCountries] = useState([]);
-  const [filtered, setFiltered] = useState([]);
-  const [query, setQuery] = useState('')
-  const names = filtered
-    .map(c => c.name.common);
+  const [allCountries, setAllCountries] = useState([]);
+  const [filteredCountries, setFilteredCountries] = useState([]);
 
   useEffect(() => {
-    db.getAll().then(data => setCountries(data));
-  },[])
+    db.getAll().then(data => setAllCountries(data));
+  }, []);
 
-  function filter(ev) {
-    console.log(ev.target.value)
-    if (!allCountries) return;
-    const query = ev.target.value.toLowerCase()
+  function handleFilter(event) {
+    const searchQuery = event.target.value.toLowerCase();
+    if (!allCountries.length) return;
 
-    setFiltered(allCountries.filter(country => {
-      country = country.name.common.toLowerCase();
-      return country.includes(query)
-    }))
+    const filtered = allCountries.filter(country => {
+      const countryName = country.name.common.toLowerCase();
+      return countryName.includes(searchQuery);
+    });
+
+    setFilteredCountries(filtered);
   }
 
-  function resultsDisplay() {
-    switch (filtered.length) {
-      case 0:
-        return <p>Type a query pls ☝️</p>
-      case 1:
-        return <CountryProfile country={filtered[0]}/>
-        return <p>{JSON.stringify(filtered[0])}</p>    
-      default:
-        return <ListOfCountries countries={filtered}/>
-        // return filtered.length <= 10 
-          // ? <ListOfThings strings={names}/> 
-          // : <p>Too many results, please be more specific.</p>
+  function ResultsDisplay() {
+    if (filteredCountries.length === 0) {
+      return <p>Type a query pls ☝️</p>;
     }
+
+    if (filteredCountries.length === 1) {
+      return <CountryProfile country={filteredCountries[0]} />;
+    }
+
+    return <ListOfCountries countries={filteredCountries} />;
   }
 
   return (
     <div>
-      <SearchBox onChange={filter} />
-      {resultsDisplay()}
+      <SearchBox onChange={handleFilter} />
+      <ResultsDisplay />
     </div>
-  )
+  );
 }
 
 function SearchBox({ onChange }) {
-  const style = {
-    margin: "0.5rem",
-  }
-  return <>find countries <input type="text" onChange={onChange} style={style}/></>
+  return (
+    <div style={{ margin: "0.5rem" }}>
+      find countries <input type="text" onChange={onChange} />
+    </div>
+  );
 }
 
 function ListOfCountries({ countries }) {
@@ -60,15 +55,29 @@ function ListOfCountries({ countries }) {
 
   return (
     <ul>
-      {countries.map(c => {
-        return <li key={c.name.common}>
-         {c.name.common}
-         <button>Show</button>
+      {countries.map(country => (
+        <li key={country.name.common}>
+          {country.name.common}
+          <button>Show</button>
         </li>
-      })}
+      ))}
     </ul>
-  )
-  
+  );
+}
+
+function CountryProfile({ country }) {
+  if (!country) return null;
+
+  return (
+    <div>
+      <h1>{country.name.common}</h1>
+      <p>Capital: {country.capital[0]}</p>
+      <p>Area: {country.area}</p>
+      <h2>Languages:</h2>
+      <ListOfThings strings={Object.values(country.languages)} />
+      <Img src={country.flags.svg} />
+    </div>
+  );
 }
 
 function ListOfThings({ strings }) {
@@ -76,40 +85,18 @@ function ListOfThings({ strings }) {
 
   return (
     <ul>
-      {strings.map(s => <li key={s}>{s}</li>)}
+      {strings.map(string => (
+        <li key={string}>{string}</li>
+      ))}
     </ul>
-  )
-  
+  );
 }
 
-function CountryProfile({ country }) {
-  if (!country) return null;
-  // console.log(Object.values(country.languages));
-  // console.log(country)
-  
-  return (
-    <div>
-      <h1>{country.name.common}</h1>
-      <p>Capital: {country.capital[0]}</p>
-      <p>Area: {country.area}</p>
-      <h2>Languages:</h2>
-      <ListOfThings strings={Object.values(country.languages)}/>
-      <Img src={country.flags.svg}/>
-    </div>
-  )
+function Img({ src }) {
+  return <img src={src} style={{ display: "block", width: "100%", maxWidth: 400 }} />;
 }
 
-function Img( {src} ) {
-  const style = {
-    display: "block",
-    width: "100%",
-    maxWidth: 400,
-    // aspectRatio: '',
-  }
-  return <img src={src} style={style}/>
-}
-
-export default App
+export default App;
 
 /*
 
