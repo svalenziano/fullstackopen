@@ -24,11 +24,25 @@ function App() {
     }))
   }
 
+  function resultsDisplay() {
+    switch (filtered.length) {
+      case 0:
+        return <p>Type a query pls ☝️</p>
+      case 1:
+        return <CountryProfile country={filtered[0]}/>
+        return <p>{JSON.stringify(filtered[0])}</p>    
+      default:
+        return <ListOfThings strings={names}/>
+        // return filtered.length <= 10 
+          // ? <ListOfThings strings={names}/> 
+          // : <p>Too many results, please be more specific.</p>
+    }
+  }
+
   return (
     <div>
       <SearchBox onChange={filter} />
-      <ListOfThings strings={names}/>
-      <CountryProfile country={allCountries[0]}/>
+      {resultsDisplay()}
     </div>
   )
 }
@@ -42,15 +56,13 @@ function SearchBox({ onChange }) {
 
 function ListOfThings({ strings }) {
   if (!strings) return null;
-  if (strings.length > 10) {
-    return <p>Greater than 10 results</p>
-  } else {
-    return (
-      <ul>
-        {strings.map(s => <li key={s}>{s}</li>)}
-      </ul>
-    )
-  }
+
+  return (
+    <ul>
+      {strings.map(s => <li key={s}>{s}</li>)}
+    </ul>
+  )
+  
 }
 
 function CountryProfile({ country }) {
@@ -74,7 +86,8 @@ function Img( {src} ) {
   const style = {
     display: "block",
     width: "100%",
-    aspectRatio: 1,
+    maxWidth: 400,
+    // aspectRatio: '',
   }
   return <img src={src} style={style}/>
 }
