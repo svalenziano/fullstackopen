@@ -1,6 +1,20 @@
 const express = require("express");
 const app = express();
 app.use(express.json());
+app.use(loqRequest);
+
+
+// CUSTOM MIDDLEWARE
+function loqRequest(req, res, next) {
+  console.log(`Req method: ${req.method}`);
+  console.log(`Req path: ${req.path}`);
+  console.log(`Req body: ${req.body && JSON.stringify(req.body)}`);
+  next();
+}
+
+function handleUnknownEndpoint(req, res) {
+  return response.status(404).send({ error: 'unknown endpoint' })
+}
 
 const DEFAULTS = [
     { 
@@ -105,6 +119,7 @@ app.post('/api/persons', (req, res) => {
 
 })
 
+app.use(handleUnknownEndpoint);
 
 const PORT = 3001;
 app.listen(PORT, () => {
