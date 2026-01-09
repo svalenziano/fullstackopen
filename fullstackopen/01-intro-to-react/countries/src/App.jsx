@@ -4,48 +4,40 @@ import './App.css';
 
 function App() {
   const [allCountries, setAllCountries] = useState([]);
-  const [filteredCountries, setFilteredCountries] = useState([]);
-
+  const [query, setQuery] = useState('');
+  const filtered = allCountries.filter(country => {
+    const countryName = country.name.common.toLowerCase();
+    return countryName.includes(query);
+  });
+  
   useEffect(() => {
     db.getAll().then(data => setAllCountries(data));
   }, []);
 
-  function handleFilter(event) {
-    const searchQuery = event.target.value.toLowerCase();
-    if (!allCountries.length) return;
-
-    const filtered = allCountries.filter(country => {
-      const countryName = country.name.common.toLowerCase();
-      return countryName.includes(searchQuery);
-    });
-
-    setFilteredCountries(filtered);
-  }
-
-  function ResultsDisplay() {
-    if (filteredCountries.length === 0) {
-      return <p>Type a query pls ☝️</p>;
-    }
-
-    if (filteredCountries.length === 1) {
-      return <CountryProfile country={filteredCountries[0]} />;
-    }
-
-    return <ListOfCountries countries={filteredCountries} />;
-  }
-
   return (
     <div>
-      <SearchBox onChange={handleFilter} />
-      <ResultsDisplay />
+      <SearchBox value={query} setValue={setQuery} />
+      <ResultsDisplay countries={filtered}/>
     </div>
   );
 }
 
-function SearchBox({ onChange }) {
+function ResultsDisplay({ countries }) {
+  if (countries.length === 0) {
+    return <p>Type a query pls ☝️</p>;
+  }
+
+  if (countries.length === 1) {
+    return <CountryProfile country={countries[0]} />;
+  }
+
+  return <ListOfCountries countries={countries} />;
+}
+
+function SearchBox({ value, setValue }) {
   return (
     <div style={{ margin: "0.5rem" }}>
-      find countries <input type="text" onChange={onChange} />
+      find countries <input type="text" value={value} onChange={(ev) => setValue(ev.target.value)} />
     </div>
   );
 }
@@ -97,7 +89,3 @@ function Img({ src }) {
 }
 
 export default App;
-
-/*
-
-*/
