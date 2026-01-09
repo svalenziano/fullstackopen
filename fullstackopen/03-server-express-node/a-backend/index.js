@@ -42,18 +42,31 @@ app.get('/api/notes/:id', (req, res) => {
 });
 
 app.post('/api/notes', (req, res) => {
-  const maxId = Math.max(...notes.map(n => Number(n.id)));
-  
+  /*
+  TODO
+    - if `note` contains props other than `content`, discard em
+    - warn if `content` is empty
+    - add 'important: false'
+  */
   let note = req.body;
 
-  note = {
-    id: String(maxId + 1),
-    ...note
+  if (!note || !note.content || note.id || note.important) {
+    const er = {
+      error: "Request must contain `content` but NOT any other properties"
+    };
+    return res.status(400).json(er);
   }
 
-  console.log(note);
+  const maxId = Math.max(...notes.map(n => Number(n.id)));
+  
+  note = {
+    id: String(maxId + 1),
+    ...note,
+    important: "false",
+  }
+
   notes = notes.concat(note);
-  res.json(note);
+  return res.json(note);
 })
 
 app.delete('/api/notes/:id', (req, res) => {
