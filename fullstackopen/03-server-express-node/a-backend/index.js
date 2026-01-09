@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+app.use(express.json());
 
 
 let notes = [
@@ -25,8 +26,48 @@ app.get('/', (req, res) => {
 });
 
 app.get('/api/notes', (req, res) => {
+  // console.log(req.headers)
   res.json(notes);
 });
+
+app.get('/api/notes/:id', (req, res) => {
+  const id = req.params.id;
+  const note = notes.find(n => n.id === id);
+  
+  if (note) {
+    res.json(note);
+  } else {
+    res.status(404).end();
+  }
+});
+
+app.post('/api/notes', (req, res) => {
+  const maxId = notes.reduce((accum, note) => {
+    return Math.max(accum, Number.parseInt(note.id));
+  }, -1);
+  
+  let note = req.body;
+
+  note = {
+    id: String(maxId + 1),
+    ...note
+  }
+
+  console.log(note);
+  notes = notes.concat(note);
+  res.json(note);
+})
+
+app.delete('/api/notes/:id', (req, res) => {
+  const id = req.params.id;
+  const note = notes.find(n => n.id === id);
+
+  if (note) {
+    res.status(204).end();
+  } else {
+    res.status(404).end();
+  }
+})
 
 const PORT = 3001;
 app.listen(PORT, () => {
