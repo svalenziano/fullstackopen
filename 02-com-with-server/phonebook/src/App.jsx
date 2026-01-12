@@ -201,7 +201,7 @@ function BookEntry({ id, name, number, important, handleToggleImportant, handleD
         data-important={important}
         onClick={handleToggleImportant}
       >
-        {important ? "important" : "unimportant"}
+        {important === 'true' ? "important" : "unimportant"}
       </button>
       <button onClick={e => handleDelete(id)}>X</button>
     </li>

@@ -12,7 +12,9 @@ app.use(morgan(':method :url :status :res[content-length] - :response-time ms :b
   skip: (req, res) => req.method !== "POST"
 }));
 
-
+function makeErrorObjectIdNotFound(id) {
+  return {error: `No person with id ${id} found.`};
+}
 
 // CUSTOM MIDDLEWARE
 function loqRequest(req, res, next) {
@@ -79,7 +81,7 @@ app.get('/api/persons/:id', (req, res) => {
     return res.json(found);
   }
 
-  return res.status(404).json({error: `No person with id ${id} found.`});
+  return res.status(404).json(makeErrorObjectIdNotFound(id));
 }) 
 
 app.delete('/api/persons/:id', (req, res) => {
@@ -127,6 +129,42 @@ app.post('/api/persons', (req, res) => {
   // console.log(req.body)
 
   return res.json(newEntry);
+})
+
+app.patch('/api/persons/:id', (req, res) => {
+  const id = req.params.id;
+  /*
+  Modify the local data.  If entry id === id:
+    - get `important` from body
+    - convert from string to boolean
+    - 
+  Success? Return 
+  Failure? Return `404` with error
+  Send response with new data
+  */
+  let found = null;
+
+  entries = entries.map(entry => {
+    if (entry.id === id) {
+      const modified = {
+        ...entry,
+        important: entry.important === 'true' ? 'false' : 'true'
+      };
+
+      found = modified;
+      return modified
+    } else {
+      return entry;
+    }
+  });
+
+  console.log(entries)
+
+  if (found) {
+    res.status(200).json(found);
+  } else {
+    res.status(404).json(makeErrorObjectIdNotFound(id));
+  }
 })
 
 app.use(handleUnknownEndpoint);
