@@ -150,7 +150,7 @@ app.patch('/api/persons/:id', (req, res) => {
 
 app.use(handleUnknownEndpoint);
 
-const PORT = 3001;
+const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
-  console.log(`Listening on port ${PORT}`);
-})
+  console.log(`Server running on port ${PORT}`)
+});
