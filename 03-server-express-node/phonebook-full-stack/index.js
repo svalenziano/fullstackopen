@@ -117,16 +117,16 @@ app.post('/api/persons', (req, res) => {
 
   const id = String(Math.floor(Math.random() * 1000000000000)) ;
 
-  entries.push({
+  const newEntry = {
     id,
     name,
     number
-  });
+  };
+
+  entries.push(newEntry);
   // console.log(req.body)
 
-  return res.json(entries);
-
-
+  return res.json(newEntry);
 })
 
 app.use(handleUnknownEndpoint);
