@@ -16,6 +16,10 @@ function makeErrorObjectIdNotFound(id) {
   return {error: `No person with id ${id} found.`};
 }
 
+function toggleImportant(entries, id) {
+  
+}
+
 // CUSTOM MIDDLEWARE
 function loqRequest(req, res, next) {
   console.log(`Req method: ${req.method}`);
@@ -142,26 +146,24 @@ app.patch('/api/persons/:id', (req, res) => {
   Failure? Return `404` with error
   Send response with new data
   */
-  let found = null;
+  let found = entries.findIndex(obj => obj.id === id);
 
-  entries = entries.map(entry => {
-    if (entry.id === id) {
-      const modified = {
-        ...entry,
-        important: entry.important === 'true' ? 'false' : 'true'
-      };
+  if (found > -1) {
+    entries = entries.map(entry => {
+      if (entry.id === id) {
+        const modified = {
+          ...entry,
+          important: entry.important === 'true' ? 'false' : 'true'
+        };
 
-      found = modified;
-      return modified
-    } else {
-      return entry;
-    }
-  });
+        return modified;
+      } else {
+        return entry;
+      }
+    });
 
-  console.log(entries)
-
-  if (found) {
-    res.status(200).json(found);
+    res.status(200).json(entries[found]);
+  
   } else {
     res.status(404).json(makeErrorObjectIdNotFound(id));
   }
