@@ -64,10 +64,11 @@ const App = () => {
   function handleToggle(ev) {
     const id = ev.target.dataset.id;
     const important = ev.target.dataset.important
+    const newImportant = (important === 'false' || !important) ? 'true' : 'false'
     const name = ev.target.dataset.name
 
     noteService
-      .update(id, {important: important === "true" ? false : true})
+      .update(id, {important: newImportant})
       .then(data => {
         setNotes(notes.map(note => note.id === id ? data : note));
         setNotification(`Updated "${name}" to ${important === 'true' ? "NOT important" : "important"}`)

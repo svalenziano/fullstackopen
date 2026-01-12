@@ -16,16 +16,24 @@ function makeErrorObjectIdNotFound(id) {
   return {error: `No person with id ${id} found.`};
 }
 
-function toggleImportant(entries, id) {
-  
-}
+/**
+ * Remember that value of `important` is a string: `true` or `false`
+ * @param {*} entries 
+ * @param {*} id id of the entry to toggle `important`
+ */
+function updateEntry(entries, id, data) {
+  return entries.map(entry => {
+      if (entry.id === id) {
+        const modified = {
+          ...entry,
+          ...data
+        };
 
-// CUSTOM MIDDLEWARE
-function loqRequest(req, res, next) {
-  console.log(`Req method: ${req.method}`);
-  console.log(`Req path: ${req.path}`);
-  console.log(`Req body: ${req.body && JSON.stringify(req.body)}`);
-  next();
+        return modified;
+      } else {
+        return entry;
+      }
+    });
 }
 
 function handleUnknownEndpoint(req, res) {
@@ -78,7 +86,6 @@ app.get('/api/persons', (req, res) => {
 
 app.get('/api/persons/:id', (req, res) => {
   const id = req.params.id;
-
   const found = findEntryById(entries, id)
 
   if (found) {
@@ -90,7 +97,6 @@ app.get('/api/persons/:id', (req, res) => {
 
 app.delete('/api/persons/:id', (req, res) => {
   const id = req.params.id;
-
   const found = findEntryById(entries, id);
 
   if (found) {
@@ -102,15 +108,7 @@ app.delete('/api/persons/:id', (req, res) => {
 });
 
 app.post('/api/persons', (req, res) => {
-/*
-  Input: {
-    name: string
-    number: string
-  }
-  - Generate random id
-  - If name or number is missing, return `400` status and {error: name or number is missing}
-  - Name already exists? return '409' (conflict) status code and {error: name already exists}
-*/
+
   const { name, number } = req.body;
 
   if (!name || !number) {
@@ -130,40 +128,21 @@ app.post('/api/persons', (req, res) => {
   };
 
   entries.push(newEntry);
-  // console.log(req.body)
-
   return res.json(newEntry);
 })
 
 app.patch('/api/persons/:id', (req, res) => {
-  const id = req.params.id;
-  /*
-  Modify the local data.  If entry id === id:
-    - get `important` from body
-    - convert from string to boolean
-    - 
-  Success? Return 
-  Failure? Return `404` with error
-  Send response with new data
-  */
-  let found = entries.findIndex(obj => obj.id === id);
-
-  if (found > -1) {
-    entries = entries.map(entry => {
-      if (entry.id === id) {
-        const modified = {
-          ...entry,
-          important: entry.important === 'true' ? 'false' : 'true'
-        };
-
-        return modified;
-      } else {
-        return entry;
-      }
-    });
-
-    res.status(200).json(entries[found]);
+  if (!req.body || Object.keys(req.body).length === 0) {
+    console.error('Unexpected body')
+    console.error(req.body);
+  }
   
+  const id = req.params.id;
+  let found = entries.findIndex(obj => obj.id === id);
+  
+  if (found > -1) {
+    entries = updateEntry(entries, id, req.body);
+    res.status(200).json(entries[found]);
   } else {
     res.status(404).json(makeErrorObjectIdNotFound(id));
   }
