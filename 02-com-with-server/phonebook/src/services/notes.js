@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const baseURL = 'http://localhost:3001/persons'
+const baseURL = '/api/persons'
 
 function getAll() {
   const fake = {
@@ -8,7 +8,11 @@ function getAll() {
     name: "Fakity Fake",
     number: "555-5555",
   }
-  return axios.get(baseURL)
+  return axios.get(baseURL, {
+    headers: {
+      "Accept": "application/json;charset=utf-8"
+    }
+  })
     .then(res => res.data.concat(fake));
 }
 

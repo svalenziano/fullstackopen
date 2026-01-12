@@ -17,7 +17,10 @@ const App = () => {
   useEffect(() => {
     noteService
       .getAll()
-      .then(data => setNotes(data))
+      .then(data => {
+        setNotes(data);
+      })
+      .catch(er => setNotification("Server error ☹️, try again later"))
   }, [])
 
   function newContact(ev) {
