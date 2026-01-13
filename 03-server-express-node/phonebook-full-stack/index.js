@@ -124,24 +124,36 @@ app.post('/api/persons', (req, res) => {
 
   const { name, number } = req.body;
 
-  if (!name || !number) {
-    return res.status(400).json({ error: "Name or number is missing" });
-  }
+  // if (!name || !number) {
+  //   return res.status(400).json({ error: "Name or number is missing" });
+  // }
 
-  if (nameExists(entries, name)) {
-    return res.status(409).json({ error: "Name already exists" });
-  }
+  // if (nameExists(entries, name)) {
+  //   return res.status(409).json({ error: "Name already exists" });
+  // }
 
-  const id = String(Math.floor(Math.random() * 1000000000000)) ;
+  // const id = String(Math.floor(Math.random() * 1000000000000)) ;
 
-  const newEntry = {
-    id,
+  // const newEntry = {
+  //   name,
+  //   number
+  // };
+
+  // entries.push(newEntry);
+  // return res.json(newEntry);
+
+  const entry = new Entry({
     name,
-    number
-  };
+    number,
+  })
 
-  entries.push(newEntry);
-  return res.json(newEntry);
+  entry.save()
+    .then(result => {
+      res.json(result);
+    }).catch(er => {
+      console.log(er);
+      res.status(404).end();
+    })
 })
 
 app.patch('/api/persons/:id', (req, res) => {
