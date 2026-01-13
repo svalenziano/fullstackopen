@@ -87,30 +87,37 @@ app.get('/info', (req, res) => {
 })
 
 app.get('/api/persons', (req, res) => {
-  res.json(entries);
+
+  Entry.find({})
+    .then(result => {
+      res.json(result);
+    }).catch(er => {
+      res.status(404).end()
+    })
+
 })
 
 app.get('/api/persons/:id', (req, res) => {
   const id = req.params.id;
-  const found = findEntryById(entries, id)
 
-  if (found) {
-    return res.json(found);
-  }
-
-  return res.status(404).json(makeErrorObjectIdNotFound(id));
+  Entry.findById(id)
+    .then(result => {
+      res.json(result);
+    }).catch(er => {
+      res.status(404).json(makeErrorObjectIdNotFound(id));
+    })
 }) 
 
 app.delete('/api/persons/:id', (req, res) => {
   const id = req.params.id;
-  const found = findEntryById(entries, id);
 
-  if (found) {
-    entries = entries.filter(entry => entry !== found);
-    return res.json(entries);
-  }
-
-  return res.status(404).json({error: `No person with id ${id} found.`});
+  Entry.findByIdAndDelete(id)
+    .then(result => {
+      console.log(result);
+      res.json(result);
+    }).catch(er => {
+      res.status(404).json(makeErrorObjectIdNotFound(id));
+    })
 });
 
 app.post('/api/persons', (req, res) => {
