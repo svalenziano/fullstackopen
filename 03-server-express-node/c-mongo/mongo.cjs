@@ -27,7 +27,7 @@ EG, 'Note' model name => 'notes' collection name
 */
 const Note = mongoose.model('Note', noteSchema)
 
-function createAndSaveDocument() {
+function createAndSaveDoc() {
   // create document from Model
   const note = new Note({
     content: 'HTML is easy',
@@ -36,28 +36,37 @@ function createAndSaveDocument() {
 
   // save document to the database
   note.save().then(result => {
-    console.log('note saved!')
+    console.log('note saved!');
+    mongoose.connection.close();
   })
-
 }
 
-/*
-Your DB now contains a 'notes' collection (whether or not it had one before)
-*/
+function createAndSaveAnother() {
+  const note = new Note({
+    content: 'CSS is hard',
+    important: false,
+  });
 
-function fetchAllAndPrint() {
-  Note.find({})
-    .then(result => {
-      result.forEach(note => {
-        console.log(note);
-      })
-    })
+  note.save().then(result => {
+    mongoose.connection.close();
+  })
 }
 
+function findAllAndPrint() {
+  Note.find({}).then(result => {
+    console.log(result);
+    mongoose.connection.close();
+  })
+}
 
-/*
-RUN TESTS
-*/
-createAndSaveDocument();
-// fetchAllAndPrint();
-mongoose.connection.close();
+function findImportant() {
+  Note.find({important: true}).then(result => {
+    console.log(result);
+    mongoose.connection.close();
+  })
+}
+
+// createAndSaveDoc();
+// createAndSaveAnother();
+// findAllAndPrint();
+findImportant();
