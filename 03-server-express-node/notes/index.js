@@ -1,27 +1,43 @@
 require('dotenv').config();
 const express = require('express');
 const morgan = require('morgan');
+const mongoose = require('mongoose');
+
+
 const app = express()
-
 const PORT = process.env.PORT || 3001
+const MONGO_URI = encodeURI(process.env.MONGO_URI);
 
-let notes = [
-  {
-    id: '0',
-    content: 'HTML is easy',
-    important: true,
-  },
-  {
-    id: '2',
-    content: 'Browser can execute only JavaScript',
-    important: false,
-  },
-  {
-    id: '3',
-    content: 'GET and POST are the most important methods of HTTP protocol',
-    important: true,
-  },
-]
+mongoose.set('strictQuery', false);
+mongoose.connect(MONGO_URI, {family: 4});
+
+
+
+// create Schema
+const noteSchema = new mongoose.Schema({
+  content: String,
+  important: Boolean,
+})
+
+// create model from Schema
+const Note = mongoose.model('Note', noteSchema);
+
+// map id to string
+noteSchema.set('toJSON', {
+  transform: (doc, returnedObj) => {
+    returnedObj.id = returnedObj._id.toString();
+    delete returnedObj._id;
+    delete returnedObj.__v;
+  }
+})
+
+// fetch notes
+let notes = [];
+
+Note.find({})
+  .then(result => {
+    notes = result;
+  })
 
 app.use(morgan('tiny'))
 app.use(express.static('dist'))
