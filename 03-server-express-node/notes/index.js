@@ -34,10 +34,7 @@ noteSchema.set('toJSON', {
 // fetch notes
 let notes = [];
 
-Note.find({})
-  .then(result => {
-    notes = result;
-  })
+
 
 app.use(morgan('tiny'))
 app.use(express.static('dist'))
@@ -48,7 +45,10 @@ app.get('/', (request, response) => {
 })
 
 app.get('/api/notes', (request, response) => {
-  response.json(notes)
+  Note.find({})
+  .then(result => {
+    response.json(result);
+  })
 })
 
 app.get('/api/notes/:id', (request, response) => {
