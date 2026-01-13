@@ -53,13 +53,14 @@ app.get('/api/notes', (request, response) => {
 
 app.get('/api/notes/:id', (request, response) => {
   const id = request.params.id
-  const note = notes.find((note) => note.id === id)
 
-  if (note) {
-    response.json(note)
-  } else {
-    response.status(404).end()
-  }
+  Note.findById(id)
+    .then(result => {
+      console.log(result);
+      response.json(result)
+    }).catch(er => {
+      response.status(404).json({error: `No note with id ${id}`}).end();
+    })
 })
 
 const generateId = () => {
