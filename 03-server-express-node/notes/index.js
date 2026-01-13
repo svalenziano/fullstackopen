@@ -1,9 +1,13 @@
-const express = require('express')
+require('dotenv').config();
+const express = require('express');
+const morgan = require('morgan');
 const app = express()
+
+const PORT = process.env.PORT || 3001
 
 let notes = [
   {
-    id: '1',
+    id: '0',
     content: 'HTML is easy',
     important: true,
   },
@@ -19,15 +23,7 @@ let notes = [
   },
 ]
 
-const requestLogger = (request, response, next) => {
-  console.log('Method:', request.method)
-  console.log('Path:  ', request.path)
-  console.log('Body:  ', request.body)
-  console.log('---')
-  next()
-}
-
-app.use(requestLogger)
+app.use(morgan('tiny'))
 app.use(express.static('dist'))
 app.use(express.json())
 
@@ -89,7 +85,6 @@ const unknownEndpoint = (request, response) => {
 
 app.use(unknownEndpoint)
 
-const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
