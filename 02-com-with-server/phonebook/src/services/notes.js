@@ -22,7 +22,7 @@ function create(data) {
 }
 
 function update(id, data) {
-  return axios.patch(baseURL + `/${id}`, data)
+  return axios.patch(baseURL + `/${id}`, data, {new: true})
     .then(res => res.data);
 }
 

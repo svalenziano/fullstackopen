@@ -8,16 +8,19 @@ const { Entry } = require("./models/entry.js")
 app.use(express.json());
 app.use(express.static('dist'))
 
+// LOGGING
 morgan.token('body', (req, res) => req.body ? JSON.stringify(req.body) : "{}")
 
 app.use(morgan('tiny', {
-  skip: (req, res) => req.method === "POST"
+  skip: (req, res) => req.method === "POST" || req.method === 'PATCH'
 }));
 
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body', {
-  skip: (req, res) => req.method !== "POST"
+  skip: (req, res) => req.method !== "POST" && req.method !== "PATCH"
 }));
 
+
+// HELPER FUNCTIONS
 function makeErrorObjectIdNotFound(id) {
   return {error: `No person with id ${id} found.`};
 }
@@ -157,6 +160,8 @@ app.patch('/api/persons/:id', (req, res) => {
   }
   
   const id = req.params.id;
+
+  console.log("UPDATE ROUTE", req.body)
 
   Entry.findByIdAndUpdate(id, req.body, {new: true})
     .then(result => {

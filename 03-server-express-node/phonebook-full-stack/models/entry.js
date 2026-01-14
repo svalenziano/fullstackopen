@@ -15,6 +15,7 @@ mongoose.connect(MONGO_URI, { family: 4 })
 const entrySchema = new mongoose.Schema({
   name: String,
   number: String,
+  important: { type: Boolean, default: false },
 })
 
 // create model from Schema

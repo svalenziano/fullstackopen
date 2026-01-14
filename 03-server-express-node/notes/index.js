@@ -7,16 +7,8 @@ const {noteSchem, Note} = require('./models/note.js')
 const app = express()
 const PORT = process.env.PORT || 3001
 
-
-
-
-
-
-
 // fetch notes
 let notes = [];
-
-
 
 app.use(morgan('tiny'))
 app.use(express.static('dist'))
@@ -44,6 +36,7 @@ app.get('/api/notes/:id', (request, response) => {
       response.status(404).json({error: `No note with id ${id}`}).end();
     })
 })
+
 
 app.post('/api/notes', (request, response) => {
   const body = request.body

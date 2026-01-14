@@ -1,0 +1,11 @@
+###
+PATCH http://localhost:3001/api/persons/6967c552a72722f707ce2b3d
+Content-Type: application/json
+
+{"important": false}
+
+###
+PATCH http://localhost:3001/api/persons/6967c552a72722f707ce2b3d
+Content-Type: application/json
+
+{"important": true}
