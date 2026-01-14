@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 mongoose.set('strictQuery', false);
 const MONGO_URI = encodeURI(process.env.MONGO_URI);
+console.log("\nMONGO_URI", MONGO_URI, "\n");
 
 mongoose.connect(MONGO_URI, { family: 4 })
   .then(result => {
