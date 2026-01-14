@@ -13,7 +13,11 @@ mongoose.connect(MONGO_URI, { family: 4 })
 
 // create Schema
 const noteSchema = new mongoose.Schema({
-  content: String,
+  content: {
+    type: String,
+    required: true,
+    minLength: 2,
+  },
   important: Boolean,
 })
 

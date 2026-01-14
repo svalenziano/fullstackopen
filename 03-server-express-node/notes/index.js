@@ -14,10 +14,13 @@ let notes = [];
 // Middleware
 
 function errorHandler(error, request, response, next) {
-  console.error(error.message);
+  // console.error(error.message);
 
   if (error.name === "CastError") {
-    return response.status(400).send({ error: "Malformed id" });
+    return response.status(400).json({ error: "Malformed id" });
+  } else if (error.name === "ValidationError") {
+    // console.log('handling')
+    return response.status(400).json({ error: error.message });
   }
 
   next(error);
@@ -63,7 +66,7 @@ app.get('/api/notes/:id', (request, response) => {
 })
 
 
-app.post('/api/notes', (request, response) => {
+app.post('/api/notes', (request, response, next) => {
   const body = request.body
 
   if (!body.content) {
@@ -78,12 +81,9 @@ app.post('/api/notes', (request, response) => {
   })
 
   note.save()
-    .then(result => {
-      console.log("NOTE SAVED:");
-      console.log(result);
-    }).catch(er => {
-      console.error(er);
-    })
+    .then(savedNote => {
+      response.json(savedNote)
+    }).catch(er => next(er))
 })
 
 app.delete('/api/notes/:id', (request, response, next) => {

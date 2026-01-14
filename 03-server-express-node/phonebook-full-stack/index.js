@@ -28,7 +28,9 @@ app.use(morgan(':method :url :status :res[content-length] - :response-time ms :b
 
 function errorHandler(error, request, response, next) {
   if (error.name === "CastError") {
-    response.status(400).json({ error: "Malformed request" });
+    return response.status(400).json({ error: "Malformed request" });
+  } else if (error.name === "ValidationError") {
+    return response.status(400).json({ error: error.message });
   }
 
   response.status(500).json({ error: "Unhandled server error ☹️" })

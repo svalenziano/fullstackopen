@@ -26,7 +26,7 @@ const App = () => {
   function newContact(ev) {
     ev.preventDefault();
     if (names.includes(newName)) {
-      update(newName);
+      update(newName)
       setNotification(`Updated ${newName} to ${newPhone}`)
 
     } else {
@@ -50,7 +50,7 @@ const App = () => {
           console.log("UPDATE FUNCTION:", newNote);
           setNotes(notes.map(note => note.id === newNote.id ? newNote : note))
         })
-        .catch(er => notifyAlreadyRemoved('tktk'))
+        .catch(er => setNotification(er))
   }
 
   function createNewNote() {

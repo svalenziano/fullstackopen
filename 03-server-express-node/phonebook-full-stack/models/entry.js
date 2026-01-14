@@ -13,7 +13,11 @@ mongoose.connect(MONGO_URI, { family: 4 })
 
 // create Schema
 const entrySchema = new mongoose.Schema({
-  name: String,
+  name: {
+    type: String,
+    minLength: 2,
+    required: true,
+  },
   number: String,
   important: { type: Boolean, default: false },
 })
