@@ -86,11 +86,21 @@ app.post('/api/notes', (request, response) => {
     })
 })
 
-app.delete('/api/notes/:id', (request, response) => {
+app.delete('/api/notes/:id', (request, response, next) => {
   const id = request.params.id
-  notes = notes.filter((note) => note.id !== id)
+  // notes = notes.filter((note) => note.id !== id)
 
-  response.status(204).end()
+  // response.status(204).end()
+
+  Note.findByIdAndDelete(id)
+    .then(result => {
+      if (result) {
+        console.log(result)
+        response.status(204).end();
+      } else {
+        response.status(404).json({ error: `Note with id=${id} wasn't found`})
+      }
+    }).catch(er => next(er))
 })
 
 
