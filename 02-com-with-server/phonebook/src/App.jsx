@@ -30,8 +30,17 @@ const App = () => {
       setNotification(`Updated ${newName} to ${newPhone}`)
 
     } else {
-      createNewNote();
-      setNotification(`Added new note: ${newName}`)
+      createNewNote()
+        .then(person => {
+          setNotification(`${person.name} added! 👍`)
+        })
+        .catch(er => {
+          const errorMessage = er.response.data.error
+          setNotification(errorMessage);
+          console.error(errorMessage)
+        })
+      // setNotification(`Added new note: ${newName}`)
+      // setNotification(`${newName} added! 👍`)
     }
     setNewName('');
     setNewPhone('');
@@ -54,12 +63,12 @@ const App = () => {
   }
 
   function createNewNote() {
-    noteService
+    return noteService
       .create({name: newName, number: newPhone})
       .then((data) => {
         setNotes(notes.concat(data));
+        return data
       })
-    setNotification(`${newName} added! 👍`)
   }
 
   function handleToggle(ev) {

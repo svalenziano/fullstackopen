@@ -30,6 +30,7 @@ function errorHandler(error, request, response, next) {
   if (error.name === "CastError") {
     return response.status(400).json({ error: "Malformed request" });
   } else if (error.name === "ValidationError") {
+    console.log('TRIPPED VALIDATION ERROR')
     return response.status(400).json({ error: error.message });
   }
 
@@ -131,7 +132,7 @@ app.delete('/api/persons/:id', (req, res) => {
     })
 });
 
-app.post('/api/persons', (req, res) => {
+app.post('/api/persons', (req, res, next) => {
 
   const { name, number } = req.body;
 
@@ -143,10 +144,7 @@ app.post('/api/persons', (req, res) => {
   entry.save()
     .then(result => {
       res.json(result);
-    }).catch(er => {
-      console.log(er);
-      res.status(404).end();
-    })
+    }).catch(er => next(er))
 })
 
 app.patch('/api/persons/:id', (req, res) => {
