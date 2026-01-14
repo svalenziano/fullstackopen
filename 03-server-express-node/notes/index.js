@@ -1,7 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const morgan = require('morgan');
-const {noteSchem, Note} = require('./models/note.js')
+const { Note } = require('./models/note.js')
 
 
 const app = express()
@@ -10,9 +10,30 @@ const PORT = process.env.PORT || 3001
 // fetch notes
 let notes = [];
 
+//////////////////////////////////////////////////////////////////////////////
+// Middleware
+
+function errorHandler(error, request, response, next) {
+  console.error(error.message);
+
+  if (error.name === "CastError") {
+    return response.status(400).send({ error: "Malformed id" });
+  }
+
+  next(error);
+}
+
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({ error: 'unknown endpoint' })
+}
+
 app.use(morgan('tiny'))
 app.use(express.static('dist'))
 app.use(express.json())
+
+//////////////////////////////////////////////////////////////////////////////
+// Routes
+
 
 app.get('/', (request, response) => {
   response.send('<h1>Hello World!</h1>')
@@ -29,11 +50,15 @@ app.get('/api/notes/:id', (request, response) => {
   const id = request.params.id
 
   Note.findById(id)
-    .then(result => {
-      console.log(result);
-      response.json(result)
+    .then(note => {
+      if (note) {
+        response.json(note)
+      } else {
+        response.status(404).json({error: `No note with id ${id}`}).end();
+      }
     }).catch(er => {
-      response.status(404).json({error: `No note with id ${id}`}).end();
+      console.log(er);
+      response.status(400).json({error: "Malformed id"});
     })
 })
 
@@ -68,12 +93,14 @@ app.delete('/api/notes/:id', (request, response) => {
   response.status(204).end()
 })
 
-const unknownEndpoint = (request, response) => {
-  response.status(404).send({ error: 'unknown endpoint' })
-}
 
+//////////////////////////////////////////////////////////////////////////////
+// More Middleware
 app.use(unknownEndpoint)
+app.use(errorHandler)
 
+//////////////////////////////////////////////////////////////////////////////
+// Start the server
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
