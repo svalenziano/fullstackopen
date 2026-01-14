@@ -8,7 +8,10 @@ const { Entry } = require("./models/entry.js")
 app.use(express.json());
 app.use(express.static('dist'))
 
+
+//////////////////////////////////////////////////////////////////////////////
 // LOGGING
+
 morgan.token('body', (req, res) => req.body ? JSON.stringify(req.body) : "{}")
 
 app.use(morgan('tiny', {
@@ -20,7 +23,18 @@ app.use(morgan(':method :url :status :res[content-length] - :response-time ms :b
 }));
 
 
+//////////////////////////////////////////////////////////////////////////////
 // HELPER FUNCTIONS
+
+function errorHandler(error, request, response, next) {
+  if (error.name === "CastError") {
+    response.status(400).json({ error: "Malformed request" });
+  }
+
+  response.status(500).json({ error: "Unhandled server error ☹️" })
+  // next(error);
+}
+
 function makeErrorObjectIdNotFound(id) {
   return {error: `No person with id ${id} found.`};
 }
@@ -49,30 +63,6 @@ function handleUnknownEndpoint(req, res) {
   return res.status(404).send({ error: 'unknown endpoint' });
 }
 
-const DEFAULTS = [
-    { 
-      "id": "1",
-      "name": "Arto Hellas", 
-      "number": "040-123456"
-    },
-    { 
-      "id": "2",
-      "name": "Ada Lovelace", 
-      "number": "39-44-5323523"
-    },
-    { 
-      "id": "3",
-      "name": "Dan Abramov", 
-      "number": "12-43-234345"
-    },
-    { 
-      "id": "4",
-      "name": "Mary Poppendieck", 
-      "number": "39-23-6423122"
-    }
-]
-
-let entries = JSON.parse(JSON.stringify(DEFAULTS))
 
 function findEntryById(obj, id) {
   return obj?.find(entry => entry.id === id);
@@ -91,6 +81,10 @@ function getAll(req, res) {
       res.status(404).end()
     })
 }
+
+
+//////////////////////////////////////////////////////////////////////////////
+// ROUTES
 
 app.get('/info', (req, res) => {
 
@@ -173,7 +167,12 @@ app.patch('/api/persons/:id', (req, res) => {
     })
 })
 
+
+//////////////////////////////////////////////////////////////////////////////
+// More Middleware
+
 app.use(handleUnknownEndpoint);
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
