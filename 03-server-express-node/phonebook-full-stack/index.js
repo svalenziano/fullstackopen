@@ -79,22 +79,34 @@ function nameExists(obj, name) {
   return !!obj.find(i => i.name === name)
 }
 
-app.get('/info', (req, res) => {
-  res.send(`
-    <p>Phonebook has info for ${entries.length} people</p>
-    <p>${Date()}</p>
-  `)
-})
-
-app.get('/api/persons', (req, res) => {
-
+function getAll(req, res) {
   Entry.find({})
     .then(result => {
       res.json(result);
+      return result;
     }).catch(er => {
       res.status(404).end()
     })
+}
 
+app.get('/info', (req, res) => {
+
+  let count = null;
+
+  Entry.countDocuments({})
+    .then(c => {
+      count = c;
+    }).finally(() => {
+      res.send(`
+        <p>Phonebook has info for ${count ?? "UNKNOWN"} people</p>
+        <p>${Date()}</p>
+      `);
+    })
+
+})
+
+app.get('/api/persons', (req, res) => {
+  getAll(req, res);
 })
 
 app.get('/api/persons/:id', (req, res) => {
@@ -124,24 +136,6 @@ app.post('/api/persons', (req, res) => {
 
   const { name, number } = req.body;
 
-  // if (!name || !number) {
-  //   return res.status(400).json({ error: "Name or number is missing" });
-  // }
-
-  // if (nameExists(entries, name)) {
-  //   return res.status(409).json({ error: "Name already exists" });
-  // }
-
-  // const id = String(Math.floor(Math.random() * 1000000000000)) ;
-
-  // const newEntry = {
-  //   name,
-  //   number
-  // };
-
-  // entries.push(newEntry);
-  // return res.json(newEntry);
-
   const entry = new Entry({
     name,
     number,
@@ -163,14 +157,15 @@ app.patch('/api/persons/:id', (req, res) => {
   }
   
   const id = req.params.id;
-  let found = entries.findIndex(obj => obj.id === id);
-  
-  if (found > -1) {
-    entries = updateEntry(entries, id, req.body);
-    res.status(200).json(entries[found]);
-  } else {
-    res.status(404).json(makeErrorObjectIdNotFound(id));
-  }
+
+  Entry.findByIdAndUpdate(id, req.body, {new: true})
+    .then(result => {
+      res.json(result);
+    }).catch(er => {
+      console.error('SOMETHING WENT WRONG');
+      console.error(er);
+      res.status(500).json(makeErrorObjectIdNotFound(id))
+    })
 })
 
 app.use(handleUnknownEndpoint);

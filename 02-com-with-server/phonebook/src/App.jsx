@@ -43,10 +43,11 @@ const App = () => {
 
   function update(newName) {
       const { id } = notes.find(note => note.name === newName);
-
+      console.log('UPDATING')
       noteService
         .update(id, {number: newPhone})
         .then(newNote => {
+          console.log("UPDATE FUNCTION:", newNote);
           setNotes(notes.map(note => note.id === newNote.id ? newNote : note))
         })
         .catch(er => notifyAlreadyRemoved('tktk'))
